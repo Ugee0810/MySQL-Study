@@ -6,6 +6,9 @@
 #DB 추가
 CREATE DATABASE `MyDB`;
 DROP DATABASE `MyDB`;
+########연습######################################################
+CREATE DATABASE `MYMY`;
+DROP DATABASE `MYMY`;
 
 #실습하기 1-2
 #테이블 추가
@@ -14,6 +17,14 @@ CREATE TABLE `User1` (
 	`name` VARCHAR(10), #가변형
 	`hp` 	 CHAR(13), 	  #고정형
 	`age`  TINYINT
+);
+########연습######################################################
+CREATE TABLE `USER2` (
+	`ID`		  VARCHAR(10),
+	`이름`     VARCHAR(10),
+	`나이`     TINYINT,
+	`거주지`   VARCHAR(10),
+	`최종학력` VARCHAR(10)
 );
 
 DROP TABLE `User1`;
@@ -31,6 +42,13 @@ INSERT INTO `USER1` SET
 				`UID` = 'A105',
 				`NAME` = '이순신',
 				`HP` = '010-9785-1462';
+########연습######################################################
+INSERT INTO `USER2` SET
+`ID` 		  = 'A001',
+`이름`	   = '송환욱',
+`나이`		= '22',
+`거주지`   = '창원',
+`최종학력` = '전문대졸';
 
 #실습하기 1-4
 #쿼리문에서 조회하기
@@ -39,15 +57,23 @@ SELECT * FROM `USER1` WHERE `UID`='A101';
 SELECT * FROM `USER1` WHERE `NAME`='김춘추';
 SELECT * FROM `USER1` WHERE `AGE` > 30;
 SELECT `UID`, `NAME`, `AGE` FROM `USER1`;
+########연습######################################################
+
 
 #실습하기 1-5
 #테이블에 데이터 수정
 UPDATE `USER1` SET `HP`='010-1122-3344' WHERE `UID`='A104';
 UPDATE `USER1` SET `AGE`=51 WHERE `UID`='A105';
 UPDATE `USER1` SET `HP`='010-1234-1001', `AGE`=27 WHERE `UID`='A101'
+########연습######################################################
+UPDATE `USER2` SET `나이`='13' WHERE `ID`='A001';
+UPDATE `USER2` SET `나이`='22' WHERE `ID`='A001';
+
 
 #실습하기 1-6
 #테이블에 데이터 삭제
 DELETE FROM `USER1` WHERE `UID`='A101';
 DELETE FROM `USER1` WHERE `UID`='A102' AND `AGE`=25;
 DELETE FROM `USER1` WHERE `AGE`>= 30;
+########연습######################################################
+#DELETE FROM `USER2` WHERE `` = ;
