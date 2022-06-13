@@ -28,9 +28,9 @@ INSERT INTO `USER1` (`UID`, `NAME`, `AGE`)
 				VALUES ('A104', '강감찬', '66');
 				
 INSERT INTO `USER1` SET
-								`UID` = 'A105',
-								`NAME` = '이순신',
-								`HP` = '010-9785-1462';
+				`UID` = 'A105',
+				`NAME` = '이순신',
+				`HP` = '010-9785-1462';
 
 #실습하기 1-4
 #쿼리문에서 조회하기
