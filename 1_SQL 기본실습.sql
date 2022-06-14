@@ -13,7 +13,7 @@ DROP DATABASE `MYMY`;
 #실습하기 1-2
 #테이블 추가
 CREATE TABLE `User1` (
-	`uid`  VARCHAR(10), #문자열(최대10자)VARCHAR == C#-STRING)
+	`uid`  VARCHAR(10), #문자열(최대10자)VA	RCHAR == C#-STRING)
 	`name` VARCHAR(10), #가변형
 	`hp` 	 CHAR(13), 	  #고정형
 	`age`  TINYINT
