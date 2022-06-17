@@ -149,3 +149,145 @@ SELECT SUM(SALE), AVG(SALE)
 SELECT MIN(SALE), MAX(SALE)
 	FROM `SALES`
 	WHERE `YEAR`IN(2020);
+	
+#실습하기 5-7
+#그룹별로 추출
+SELECT * FROM `SALES` GROUP BY `UID`;
+SELECT * FROM `SALES` GROUP BY `UID`, `YEAR`;
+SELECT `UID`, COUNT(*) AS `건수` FROM `SALES` GROUP BY `UID`;
+SELECT `UID`, SUM(`SALE`) AS `합계` FROM `SALES` GROUP BY `UID`;
+SELECT `UID`, AVG(SALE) AS `평균` FROM `SALLES` GROUP BY `UID`;
+
+SELECT `UID`, `YEAR`, SUM(`SALE`) AS `합계`
+FROM `SALES`
+WHERE `SALE` >= 100000
+GROUP BY `UID`, `YEAR`
+HAVING `합계` >= 200000
+ORDER BY `합계` DESC;
+
+#실습하기 5-8
+#그룹화에 검색조건 설정
+CREATE TABLE `SALES2` LIKE `SALES`;
+INSERT INTO `SALES2` SELECT * FROM `SALES`;
+UPDATE `SALES2` SET `YEAR` = `YEAR` + 3;
+
+
+#실습하기 5-9
+#테이블 합치기
+#SALES와 SALES2를 합치고 연도로 오름차순, `합계`는 내림차순
+SELECT `UID`, `YEAR`, SUM(`SALE`) AS `합계`
+FROM `SALES`
+GROUP BY `UID`, `YEAR`
+UNION
+SELECT `UID`, `YEAR`, SUM(`SALE`) AS `합계`
+FROM `SALES2`
+GROUP BY `UID`, `YEAR`
+ORDER BY `YEAR` ASC, `합계` DESC;
+
+SELECT * FROM `SALES` UNION SELECT * FROM `SALES2`;
+
+#실습하기 5-10
+#데이터 결합
+#JOIN 조건 : 동일한 컬럼이 필요(PK)
+SELECT *
+FROM `SALES`
+JOIN `MEMBER`
+ON `SALES`.UID = `MEMBER`.UID;
+
+#별칭을 주고 합치는 편이다.(AS ?)
+#ON -> 결합 조건
+#USING() -> 동일 컬럼
+SELECT *
+FROM `SALES` AS A
+JOIN `MEBER` AS B
+ON A.UID = B.UID;
+
+#중복 선별
+SELECT
+		A.SEQ,
+		A.uid,
+		A.year,
+		A.MONTH,
+		A.SALE,
+		B.NAME,
+		B.HP,
+		B.POS
+FROM `SALES` AS A
+JOIN `MEMBER` AS B
+ON A.UID = B.UID;
+
+SELECT *
+FROM `SALES`  AS A
+JOIN `MEMBER` AS B
+USING(`UID`);
+
+#테이블 3개 결합
+SELECT *
+FROM `SALES` 		AS A
+JOIN `MEMBER` 		AS B ON A.UID = B.UID
+JOIN `DEPARTMENT` AS C ON B.DEP = C.depNo;
+
+#실습하기 5-11
+#내부조인(INNER JOIN, 교집합)
+
+#실습하기 5-12
+#외부조인(LEFT, RIGHT JOIN, A OR B집합)
+SELECT *
+FROM `SALES`  AS A
+RIGHT JOIN `MEMBER` AS B
+ON A.uid = B.UID;
+
+#확인문제 1 : 모든 직원의 아이디, 이름, 직급, 부서명을 조회하시오.
+SELECT
+		M.UID,
+		M.NAME,
+		M.POS,
+		D.NAME
+FROM `MEMBER` 		AS M
+JOIN `DEPARTMENT` AS D
+ON M.dep = D.depNo;
+
+#확인문제 2 : '김유신'직원의 2019년도 매출의 합을 조회하시오.ㅣ
+SELECT
+		S.UID,
+		M.NAME,
+		S.YEAR,
+		SUM(`SALE`) AS `합계`
+FROM `SALES`  AS S
+JOIN `MEMBER` AS M
+ON S.UID = M.UID
+WHERE
+		M.NAME = '김유신' AND
+		S.YEAR = 2019;
+
+#확인문제 3 : 2019년 50,000이상의 매출에 대해 직원별 매출의 합이 100,000원 이상인 직원의 이름, 부서명, 직급, 년도, 매출 합을 조회하시오.
+					#단, 매출 합이 큰 순서부터 정렬
+SELECT
+		M.name,
+		D.name,
+		M.pos,
+		A.year,
+		SUM(`SALE`) AS `합계`
+FROM `SALES` 		AS A
+JOIN `MEMBER` 		AS M ON A.UID = M.UID
+JOIN `DEPARTMENT` AS D ON M.DEP = D.depNo
+WHERE
+		`YEAR` = 2019 AND
+		`SALE` >= 50000
+GROUP BY M.`UID` # A의 UID도 상관X
+HAVING `합계` >= 100000
+ORDER BY `합계` DESC;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
