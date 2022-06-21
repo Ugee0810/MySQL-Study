@@ -223,23 +223,21 @@ MAX(`ORDERID`) AS `판매건수`
 FROM `ORDERS`;
 
 #문제32 : 도서제목에 '야구'가 포함된 도서를 '농구'로 변경한 후 도서 목록을 조회하시오.
-UPDATE `BOOK`
-SET    `BOOKNAME` = '농구의 추억'
-WHERE  `BOOKNAME` = '야구의 추억';
-UPDATE `BOOK`
-SET    `BOOKNAME` = '농구를 부탁해'
-WHERE  `BOOKNAME` = '야구를 부탁해';
 SELECT
-*
+`BOOKID`,
+REPLACE(`BOOKNAME`, '야구', '농구') AS `BOOKNAME`,
+`PUBLISHER`,
+`PRICE`
 FROM `BOOK`;
 
 #문제33 : 가격이 8,000원 이상인 도서를 구매한 고객에 대하여 고객별 주문 도서의 총 수량을 조회하시오. 단, 두 권 이상 구매한 고객만 구한다.
-##############X############
 SELECT
 	`CUSTID`,
+	COUNT(`ORDERID`) AS `수량`
 FROM `ORDERS`
-WHERE
-	`SALEPRICE` >= 8000;
+WHERE `SALEPRICE` >= 8000
+GROUP BY `CUSTID`
+HAVING `수량` >= 2;
 
 #문제34 : 고객과 고객의 주문에 관한 데이터를 모두 조회하시오.
 SELECT
@@ -248,6 +246,18 @@ FROM `CUSTOMER` AS C
 JOIN `ORDERS`   AS O
 ON C.custid = O.custid;
 
+SELECT
+	*
+FROM `CUSTOMER`
+JOIN `ORDERS`
+USING(`CUSTID`);
+
+SELECT
+	*
+FROM 
+	`CUSTOMER` AS C,
+	`ORDERS`   AS O
+WHERE C.custid = O.custid;
 #문제35 : 고객과 고객의 주문에 관한 데이터를 고객번호 순으로 정렬하여 조회하시오.
 SELECT
 	*
@@ -261,51 +271,73 @@ SELECT
 	C.name,
 	O.saleprice
 FROM `CUSTOMER` AS C
-JOIN `ORDERS` AS O
-ON C.custid = O.custid;
+JOIN `ORDERS`   AS O
+ON C.custid = O.custid
+ORDER BY C.CUSTID;
 
 #문제37 : 고객별로 주문한 모든 도서의 총 판매액을 조회하고, 고객별로 정렬하시오.
-############X##############
 SELECT
-	C.NAME,
-	SUM(`SALEPRICE`) AS `총판매액`
-FROM `CUSTOMER` AS C
-JOIN `ORDERS` AS O
-ON C.CUSTID = O.CUSTID
-WHERE 
-ORDER BY C.NAME ASC;
+	`NAME`,
+	SUM(`SALEPRICE`)
+FROM `ORDERS`  AS O
+JOIN `CUSTOMER` AS C
+ON O.custid = C.custid
+GROUP BY O.custid
+ORDER BY `NAME`;
 
 #문제38 : 고객의 이름과 고객이 주문한 도서의 이름을 조회하시오.
-############X##############
 SELECT
-	C.name,
-	B.BookName
+	`NAME`,
+	`BOOKNAME`
 FROM `CUSTOMER` AS C
-JOIN `BOOK`     AS B
-JOIN `ORDERS`   AS O
-ON B.BookID = O.bookid;
-WHERE 
-;
+JOIN `ORDERS`  AS O ON C.custid = O.CUSTID
+JOIN `BOOK`     AS B ON O.BOOKID = B.BOOKID;
+
 
 #문제39 : 가격이 20,000원인 도서를 주문한 고객의 이름과 도서의 이름을 조회하시오.
-
+SELECT
+	`NAME`,
+	`BOOKNAME`
+FROM `CUSTOMER` AS C
+JOIN `ORDERS` AS O ON C.custid = O.custid
+JOIN `BOOK`     AS B ON O.BOOKID = B.BOOKID
+WHERE `PRICE` = 20000;
 
 #문제40 : 도서를 구매하지 않은 고객을 포함해서 고객명과 고객이 주문한 도서의 판매가격을 조회하시오.
-
+SELECT
+	`NAME`,
+	`SALEPRICE`
+FROM `ORDERS` AS O
+RIGHT JOIN `CUSTOMER` AS C
+ON O.custid = C.custid;
 
 #문제41 : 가장 비싼 도서의 이름을 조회하시오.
-
+SELECT
+	`BOOKNAME`
+FROM `BOOK`
+WHERE `PRICE` = (SELECT MAX(`PRICE`) FROM `BOOK`);
 
 #문제42 : 도서를 주문하지 않은 고객의 이름을 조회하시오.
-
+SELECT
+	`NAME`
+FROM `CUSTOMER`
+LEFT JOIN `ORDERS`
+USING(`CUSTID`)
+WHERE `ORDERID` IS NULL;
 
 #문제43 : 김연아 고객이 주문한 도서의 총 판매액을 조회하시오.
-
+SELECT
+	SUM(SALEPRICE) AS `총매출`
+FROM `CUSTOMER` AS C
+JOIN `ORDERS`   AS O
+ON C.custid = O.orderid
+WHERE `NAME` = '김연아';
 
 #문제44 : Book 테이블에 새로운 도서 '스포츠 의학'을 삽입하시오. 스포츠 의학은 한솔의학서적에서 출간했으며 가격은 미정이다.
-
+INSERT INTO `BOOK` (`BOOKNAME`, `PUBLISHER`) VALUES ('스포츠 의학', '한솔의학서적');
 
 #문제45 : Customer 테이블에서 고객번호가 5인 고객의 주소를 '대한민국 부산'으로 변경하시오.
-
+UPDATE 
  
 #문제46 : Customer 테이블에서 고객번호가 5인 고객을 삭제하시오.
+DELETE

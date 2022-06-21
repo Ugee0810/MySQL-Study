@@ -1,0 +1,220 @@
+#날짜 : 2022/06/21
+#이름 : 송환욱
+#내용 : 교재 5장 집계와 서브쿼리
+
+###############################
+#20강 행 개수 구하기
+###############################
+#테이블 생성/데이터 저장
+CREATE TABLE `sample51` (
+`NO`       INT AUTO_INCREMENT PRIMARY KEY,
+`NAME`     VARCHAR(10),
+`QUANTITY` INT
+);
+INSERT INTO `SAMPLE51` (`NAME`, `QUANTITY`) VALUES ('A', 1);
+INSERT INTO `SAMPLE51` (`NAME`, `QUANTITY`) VALUES ('A', 2);
+INSERT INTO `SAMPLE51` (`NAME`, `QUANTITY`) VALUES ('B', 10);
+INSERT INTO `SAMPLE51` (`NAME`, `QUANTITY`) VALUES ('C', 3);
+INSERT INTO `SAMPLE51` (`NAME`, `QUANTITY`) VALUES (NULL, NULL);
+
+#p183 : SAMPLE51의 행 개수 구하기
+SELECT COUNT(*)
+FROM `SAMPLE51`
+
+#p185 : SAMPLE51의 행 개수를 WHERE 구를 지정하여 구하기
+SELECT * FROM `SAMPLE51` WHERE `NAME` = 'A';
+SELECT COUNT(*) FROM `SAMPLE51` WHERE `NAME` = 'A';
+
+#p186 : 행 개수를 구할 때 NULL 값 다루기
+SELECT
+	COUNT(`NO`),
+	COUNT(`NAME`)
+FROM `SAMPLE51`;
+
+#p188 : DISTINCT로 중복 제거하기
+SELECT ALL `NAME` FROM `SAMPLE51`;
+SELECT DISTINCT `NAME` FROM `SAMPLE51`;
+
+#p189 : 중복을 제거한 뒤 개수 구하기
+SELECT
+COUNT(ALL `NAME`),
+COUNT(DISTINCT `NAME`)
+FROM `SAMPLE51`;
+
+###############################
+#21강 COUNT 이외의 집계함수
+###############################
+#p191 : SUM으로 QUANTITY열의 합계 구하기
+SELECT
+SUM(`QUANTITY`)
+FROM `SAMPLE51`;
+
+#p192 : AVG로 평균 값 구하기
+SELECT
+AVG(`QUANTITY`),
+SUM(`QUANTITY`)/COUNT(`QUANTITY`)
+FROM `SAMPLE51`;
+
+#p193 : AVG로 평균값 계산, MIN, MAX로 최솟값 최댓값 구하기
+SELECT
+AVG(CASE WHEN `QUANTITY` IS NULL THEN 0 ELSE `QUANTITY` END) AS `AVGNULL0`
+FROM `SAMPLE51`;
+
+SELECT
+MIN(`QUANTITY`),
+MAX(`QUANTITY`),
+MIN(`NAME`),
+MAX(`NAME`)
+FROM `SAMPLE51`;
+
+###############################
+#22강 그룹화-GROUP BY
+###############################
+#p195 : GROUP BY 구에 NAME 열을 지정해 그룹화하기
+SELECT
+`NAME`
+FROM `SAMPLE51`
+GROUP BY `NAME`;
+
+#p197 : GROUP BY 구와 집계함수를 조합
+SELECT
+`NAME`,
+COUNT(`NAME`),
+SUM(`QUANTITY`)
+FROM `SAMPLE51`
+GROUP BY `NAME`;
+
+#p199 : HAVING 구로 걸러내기
+SELECT
+`NAME`,
+COUNT(`NAME`)
+FROM `SAMPLE51`
+GROUP BY `NAME`
+HAVING COUNT(`NAME`) = 1;
+
+
+#p202 : NAME 열로 그룹화해 합계를 구하고 내림차순으로 정렬
+SELECT
+`NAME`,
+COUNT(`NAME`),
+SUM(`QUANTITY`)
+FROM `SAMPLE51`
+GROUP BY `NAME`
+ORDER BY SUM(`QUANTITY`) DESC;
+
+###############################
+#23강 서브쿼리
+###############################
+#테이블 생성/데이터 저장
+CREATE TABLE `sample54` (
+`NO` INT AUTO_INCREMENT PRIMARY KEY,
+`A`  INT
+);
+INSERT INTO `SAMPLE54` (`A`) VALUES (100);
+INSERT INTO `SAMPLE54` (`A`) VALUES (900);
+INSERT INTO `SAMPLE54` (`A`) VALUES (20);
+INSERT INTO `SAMPLE54` (`A`) VALUES (80);
+
+#p205 : SAMPLE54에서 A의 최솟값 검색하기
+SELECT
+MIN(A)
+FROM `SAMPLE54`;
+
+#p206 : 괄호로 서브쿼리를 지정해 삭제
+DELETE FROM `SAMPLE54`
+WHERE `A` = (SELECT MIN(A) FROM `SAMPLE54`);
+
+#p207 : 패턴1 - 하나의 값을 반환하는 패턴
+SELECT
+MIN(`A`)
+FROM `SAMPLE54`;
+
+#p207 : 패턴2 - 복수의 행이 반환되지만 열은 하나인 패턴
+SELECT
+`NO`
+FROM `SAMPLE54`;
+
+#p207 : 패턴3 - 하나의 행이 반환되지만 열이 복수인 패턴
+SELECT
+MIN(`A`),
+MAX(`NO`)
+FROM `SAMPLE54`;
+
+#p208 : 패턴4 - 복수의 행, 복수의 열이 반환되는 패턴
+SELECT
+`NO`,
+`A`
+FROM `SAMPLE54`;
+
+#p210 : 1 - SELECT 구에서 서브쿼리 사용하기
+SELECT
+	(SELECT COUNT(*) FROM `SAMPLE51`) AS `SQ1`,
+	(SELECT COUNT(*) FROM `SAMPLE54`) AS `SQ2`;
+	
+#p210 : 2 - SELECT 구에서 서브쿼리 사용하기(Oracle의 경우)
+SELECT
+	(SELECT COUNT(*) FROM `SAMPLE51`) AS `SQ1`,
+	(SELECT COUNT(*) FROM `SAMPLE54`) AS `SQ2` FROM DUAL;
+
+#p211 : SET 구에서 서브쿼리 사용하기
+UPDATE `SAMPLE54`
+SET `A` = (SELECT MAX(`A`) FROM `SAMPLE54`);
+
+#p212 : FROM 구에서 서브쿼리 사용하기
+SELECT * FROM (SELECT * FROM `SAMPLE54`)`SQ`;
+
+#p212 : FROM 구에서 서브쿼리 사용하기(AS로 지정)
+SELECT * FROM (SELECT * FROM `SAMPLE54`) AS `SQ`;
+
+#테이블 생성/데이터 저장
+CREATE TABLE `sample541` (
+`A` INT,
+`B` INT
+);
+INSERT INTO `SAMPLE541` (`A`, `B`) VALUES (5, 3);
+#p214 : VALUES 구에서 서브쿼리 사용하기
+INSERT INTO `SAMPLE541` VALUES (
+(SELECT COUNT(*) FROM `SAMPLE51`),
+(SELECT COUNT(*) FROM `SAMPLE54`)
+);
+
+#p214 : SELECT 결과를 INSERT 하기
+INSERT INTO `SAMPLE541` SELECT 1, 2;
+
+###############################
+#24강 상관 서브쿼리
+###############################
+#테이블 생성/데이터 저장
+CREATE TABLE `sample551` (
+`NO` INT AUTO_INCREMENT PRIMARY KEY,
+`A` VARCHAR(10)
+);
+INSERT INTO `SAMPLE551` (`A`) VALUES (NULL);
+CREATE TABLE `sample552` (
+`NO 2` INT
+);
+INSERT INTO `SAMPLE552` (`NO 2`) VALUES (3);
+INSERT INTO `SAMPLE552` (`NO 2`) VALUES (5);
+#p218 : EXISTS를 사용해 '있음'으로 갱신하기
+UPDATE `SAMPLE551` SET `A` = '있음' WHERE
+ EXISTS (SELECT * FROM `SAMPLE552` WHERE `NO 2` = `NO`);
+
+#p219 : NOT EXISTS를 사용해 '없음'으로 갱신하기
+UPDATE `SAMPLE551`
+SET `A` = '없음'
+WHERE NOT EXISTS (SELECT * FROM `SAMPLE552` WHERE `NO 2` = `NO`);
+
+#p221 : 열에 테이블 명 붙이기
+UPDATE `SAMPLE551`
+SET `A` = '있음'
+WHERE EXISTS (SELECT * FROM `SAMPLE552` WHERE `SAMPLE552`.`NO 2` = `SAMPLE551`.`NO`);
+
+#p222 : IN을 사용해 조건식 기술
+SELECT *
+FROM `SAMPLE551`
+WHERE `NO` IN(3, 5);
+
+#p222 : IN의 오른쪽을 서브쿼리로 지정하기
+SELECT *
+FROM `SAMPLE551`
+WHERE `NO` IN(SELECT `NO 2` FROM `SAMPLE552`);
