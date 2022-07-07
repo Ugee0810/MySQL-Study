@@ -2,19 +2,26 @@
 #이름 : 송환욱
 #내용 : 테이블 설정 실습
 
-#실습하기 2-1
-CREATE TABLE `USER3` (
-	`UID` VARCHAR(10) PRIMARY KEY,
-	`NAME` VARCHAR(10),
-	`HP` CHAR(13),
-	`AGE` TINYINT
+CREATE TABLE `BlockBreakWinner` (
+	`uid`   VARCHAR(10) PRIMARY KEY,
+	`name`  VARCHAR(10),
+	`hp`	  CHAR(13),
+	`age`   TINYINT
 );
-INSERT INTO `USER3` VALUES ('A101', '김유신', '010-1111-1111', 25);
-INSERT INTO `USER3` VALUES ('A102', '김춘추', '010-1111-2222', 23);
-INSERT INTO `USER3` VALUES ('A103', '장보고', '010-1111-3333', 35);
-INSERT INTO `USER3` VALUES ('A104', '강감찬', '010-1111-4444', 45);
-INSERT INTO `USER3` VALUES ('A105', '이순신', '010-1111-5555', 51);
-INSERT INTO `USER3` VALUES ('A106', '정약용', '010-1111-3333', 42);
+
+#실습하기 2-1
+CREATE TABLE `User2` (
+	`uid`   VARCHAR(10) PRIMARY KEY,
+	`name`  VARCHAR(10),
+	`hp`	  CHAR(13),
+	`age`   TINYINT
+);
+INSERT INTO `user2` VALUES ('a101', '김유신', '010-1234-1111', 25);
+INSERT INTO `user2` VALUES ('a102', '김춘추', '010-1234-2222', 23);
+INSERT INTO `user2` VALUES ('a103', '장보고', '010-1234-3333', 35);
+INSERT INTO `user2` VALUES ('a104', '강감찬', '010-1234-4444', 45);
+INSERT INTO `user2` VALUES ('a105', '이순신', '010-1234-5555', 51);
+INSERT INTO `user2` VALUES ('a106', '정약용', '010-1234-3333', 42);
 
 
 #실습하기 2-2
